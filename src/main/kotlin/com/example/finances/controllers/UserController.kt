@@ -3,6 +3,7 @@ package com.example.finances.controllers
 import com.example.finances.services.UserService
 import com.example.finances.user.UserCreateDTO
 import com.example.finances.user.UserDTO
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,6 +20,6 @@ class UserController(
     fun getUserById(@PathVariable id: Int): UserDTO = userService.findById(id)
 
     @PostMapping
-    fun createUser(@RequestBody userCreateDTO: UserCreateDTO): UserDTO =
+    fun createUser(@RequestBody @Valid userCreateDTO: UserCreateDTO): UserDTO =
         userService.createUser(userCreateDTO)
 }

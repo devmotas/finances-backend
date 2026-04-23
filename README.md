@@ -5,7 +5,7 @@ API REST em **Kotlin** com **Spring Boot 4** e **Gradle**.
 ## Requisitos
 
 - JDK 21
-- MySQL (banco `finances` ou o definido na URL)
+- PostgreSQL (banco `finances` ou o definido na URL)
 
 ## Configuração de ambientes
 

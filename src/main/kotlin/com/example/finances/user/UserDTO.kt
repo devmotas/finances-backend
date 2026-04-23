@@ -8,4 +8,6 @@ data class UserDTO(
     val email: String,
     val createdAt: Instant?,
     val updatedAt: Instant?,
+    val defaultRecurrenceMonths: Int,
+    val emergencyFundTargetMonths: Int,
 )

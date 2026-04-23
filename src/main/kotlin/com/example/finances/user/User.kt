@@ -21,6 +21,12 @@ class User(
     var email: String = "",
     @Column(nullable = false)
     var password: String = "",
+
+    @Column(name = "default_recurrence_months", nullable = false)
+    var defaultRecurrenceMonths: Int = 12,
+
+    @Column(name = "emergency_fund_target_months", nullable = false)
+    var emergencyFundTargetMonths: Int = 6,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

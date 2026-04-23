@@ -7,16 +7,33 @@ API REST em **Kotlin** com **Spring Boot 4** e **Gradle**.
 - JDK 21
 - MySQL (banco `finances` ou o definido na URL)
 
-## Configuração
+## Configuração de ambientes
 
-1. Copie `src/main/resources/application.properties.example` para `src/main/resources/application.properties`.
-2. Preencha usuário e senha do banco (e demais campos necessários).
+O projeto usa profiles do Spring:
+
+- `dev` (padrão local)
+- `prod` (produção)
+
+Arquivos:
+
+- `src/main/resources/application.properties` (configuração comum + profile ativo)
+- `src/main/resources/application-dev.properties`
+- `src/main/resources/application-prod.properties`
+
+Variáveis importantes:
+
+- `SPRING_PROFILES_ACTIVE` (`dev` por padrão)
+- `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`
+- `APP_JWT_SECRET`, `APP_JWT_EXPIRATION_MS`
+- `APP_CORS_ALLOWED_ORIGIN_PATTERNS` (lista separada por vírgula)
 
 ## Executar
 
 ```bash
 ./gradlew bootRun
 ```
+
+Esse comando sobe em `dev` automaticamente (ou usa `SPRING_PROFILES_ACTIVE` se definido).
 
 No Windows: `gradlew.bat bootRun`
 

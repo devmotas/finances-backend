@@ -37,6 +37,25 @@ class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body)
     }
 
+    @ExceptionHandler(
+        CategoryNotFoundException::class,
+        TransactionNotFoundException::class,
+        RecurrenceNotFoundException::class,
+    )
+    fun handleNotFound(e: RuntimeException): ResponseEntity<ErrorResponseDTO> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(ErrorResponseDTO(HttpStatus.NOT_FOUND.value(), e.message))
+
+    @ExceptionHandler(DuplicateCategoryNameException::class, CategoryHasTransactionsException::class)
+    fun handleConflict(e: RuntimeException): ResponseEntity<ErrorResponseDTO> =
+        ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponseDTO(HttpStatus.CONFLICT.value(), e.message))
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequest(e: BadRequestException): ResponseEntity<ErrorResponseDTO> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), e.message))
+
     @ExceptionHandler(Exception::class)
     fun handleGeneralError(e: Exception): ResponseEntity<ErrorResponseDTO> =
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

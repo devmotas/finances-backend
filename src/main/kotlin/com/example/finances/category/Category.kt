@@ -18,6 +18,7 @@ import jakarta.persistence.Table
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.math.BigDecimal
 import java.time.Instant
 
 @Entity
@@ -32,12 +33,15 @@ class Category(
     var name: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     var flow: Flow,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "expense_group")
     var expenseGroup: ExpenseGroup? = null,
+
+    @Column(name = "opening_balance_amount", nullable = false, precision = 15, scale = 2)
+    var openingBalanceAmount: BigDecimal = BigDecimal.ZERO.setScale(2),
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

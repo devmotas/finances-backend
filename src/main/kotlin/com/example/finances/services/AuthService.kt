@@ -1,5 +1,8 @@
 package com.example.finances.services
 
+import com.example.finances.category.Category
+import com.example.finances.category.CategoryRepository
+import com.example.finances.common.Flow
 import com.example.finances.exceptions.InvalidCredentialsException
 import com.example.finances.exceptions.UserAlreadyExistsException
 import com.example.finances.repositories.UserRepository
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService(
     private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
 ) {
@@ -29,6 +33,7 @@ class AuthService(
                 password = passwordEncoder.encode(dto.password)!!,
             )
         )
+        seedInvestmentCategories(user)
         return buildResponse(user)
     }
 
@@ -41,6 +46,26 @@ class AuthService(
         return buildResponse(user)
     }
 
+    private fun seedInvestmentCategories(user: User) {
+        val names = listOf(
+            "Renda Fixa (Tesouro, CDB, LCI/LCA)",
+            "Renda Variável (Ações, ETFs)",
+            "Fundos Imobiliários (FIIs)",
+            "Criptomoedas",
+            "Poupança",
+        )
+        for (name in names) {
+            categoryRepository.save(
+                Category(
+                    user = user,
+                    name = name,
+                    flow = Flow.investment,
+                    expenseGroup = null,
+                ),
+            )
+        }
+    }
+
     private fun buildResponse(user: User): AuthResponseDTO {
         val token = jwtTokenProvider.generateToken(user.id!!)
         return AuthResponseDTO(
@@ -51,6 +76,8 @@ class AuthService(
                 email = user.email,
                 createdAt = user.createdAt,
                 updatedAt = user.updatedAt,
+                defaultRecurrenceMonths = user.defaultRecurrenceMonths,
+                emergencyFundTargetMonths = user.emergencyFundTargetMonths,
             )
         )
     }

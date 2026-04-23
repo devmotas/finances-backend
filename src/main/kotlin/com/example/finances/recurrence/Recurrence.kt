@@ -1,15 +1,10 @@
-package com.example.finances.transaction
+package com.example.finances.recurrence
 
 import com.example.finances.category.Category
-import com.example.finances.common.Flow
-import com.example.finances.common.Schedule
-import com.example.finances.recurrence.Recurrence
 import com.example.finances.user.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityListeners
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -18,16 +13,15 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "recurrences")
 @EntityListeners(AuditingEntityListener::class)
-class Transaction(
+class Recurrence(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
@@ -43,22 +37,13 @@ class Transaction(
     var amount: BigDecimal,
 
     @Column(nullable = false)
-    var date: LocalDate,
+    val startDate: LocalDate,
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var schedule: Schedule,
+    var months: Int,
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 32)
-    var flow: Flow,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recurrence_id")
-    var recurrence: Recurrence? = null,
-
-    @Column(name = "recurrence_index")
-    var recurrenceIndex: Int? = null,
+    @Column(name = "installment_total")
+    var installmentTotal: Int? = null,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,7 +52,4 @@ class Transaction(
     @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdAt: Instant? = null
-
-    @LastModifiedDate
-    var updatedAt: Instant? = null
 }

@@ -1,6 +1,7 @@
 package com.example.finances.configurations
 
 import com.example.finances.security.JwtAuthenticationFilter
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -20,6 +21,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    @Value("\${app.cors.allowed-origin-patterns:http://localhost:*,http://127.0.0.1:*}")
+    private val corsAllowedOriginPatterns: String,
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -45,9 +48,15 @@ class SecurityConfig(
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
+        val allowedOrigins =
+            corsAllowedOriginPatterns
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+
         val config = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:4200")
-            allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            allowedOriginPatterns = allowedOrigins
+            allowedMethods = listOf("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
             allowCredentials = true
         }

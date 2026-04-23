@@ -31,7 +31,6 @@ class JwtAuthenticationFilter(
                 ).also { it.details = WebAuthenticationDetailsSource().buildDetails(request) }
                 SecurityContextHolder.getContext().authentication = auth
             } catch (e: UsernameNotFoundException) {
-                // token válido mas usuário removido — deixa sem autenticação
             }
         }
         filterChain.doFilter(request, response)
